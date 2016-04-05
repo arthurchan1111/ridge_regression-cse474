@@ -186,7 +186,11 @@ def learnRidgeRegression(X,y,lambd):
     # Output:                                                                  
     # w = d x 1                                                                
 
-    # IMPLEMENT THIS METHOD                                                   
+    # IMPLEMENT THIS METHOD      
+    id = np.identity(X.shape[1]);
+    e1= np.linalg.inv(np.add(np.dot(np.transpose(X),X), lambd*id))
+    e2= np.dot(e1,np.transpose(X))
+    w= np.dot(e2,y)                                             
     return w
 
 def testOLERegression(w,Xtest,ytest):
