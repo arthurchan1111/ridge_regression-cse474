@@ -112,7 +112,6 @@ def ldaTest(means,covmat,Xtest,ytest):
 
     correct=0
     for p in range(0, Xtest.shape[0]):
-        print(ypred[p], ytest[p])
         if ypred[p] == ytest[p]:
             correct+= 1
     
@@ -235,18 +234,12 @@ def mapNonLinear(x,p):
     # Outputs:                                                                 
     # Xd - (N x (d+1))                                                         
     # IMPLEMENT THIS METHOD
-    print("Xd in shape")
     #print(x)
-    print(p)
     Xd = np.zeros((x.shape[0],p+1))
-    print("Xd shape")
-    print(Xd.shape)
     for y in range(0,p+1):
         for j in range(0,x.shape[0]):
            
             Xd[j][y]=x[j]**y
-    print("Xd out")
-    print(Xd)
     return Xd
 
 # Main script
