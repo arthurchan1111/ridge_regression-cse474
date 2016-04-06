@@ -215,8 +215,17 @@ def regressionObjVal(w, X, y, lambd):
     # lambda                                                                  
 
     # IMPLEMENT THIS METHOD
-    error = np.divide(np.sum(np.power(y-np.dot(np.transpose(w),X)),2) + lambd*(np.dot(np.transpose(w),w)),2)
-    error_grad= np.dot(np.dot(np.transpose(X),X),w) - np.dot(np.transpose(X),y)  +  lambd * np.transpose(w)                                           
+    w = np.array(w,ndmin=2)
+    w = np.transpose(w)
+    
+    error = 0.5 * (np.dot(np.transpose(y-np.dot(X,w)),y-np.dot(X,w)) + lambd*(np.dot(np.transpose(w),w)))
+    #error = 0.5 * (np.sum(np.power(y-np.dot(X,w),2)) + lambd*(np.dot(np.transpose(w),w)))
+    #error_grad= np.dot(np.dot(np.transpose(X),X),w) - np.dot(np.transpose(X),y)  +  lambd * np.transpose(w)
+    error_grad = -2 * np.dot( np.transpose(X),(y-np.dot(X,w)))  + 2*lambd * w
+    #error_grad=np.transpose(np.array(error_grad[:,0],ndmin=2))
+    error_grad=error_grad[:,0]
+    error = error[0][0]
+                                              
     return error, error_grad
 
 def mapNonLinear(x,p):
@@ -226,8 +235,18 @@ def mapNonLinear(x,p):
     # Outputs:                                                                 
     # Xd - (N x (d+1))                                                         
     # IMPLEMENT THIS METHOD
-    for y in xrange(0,p):
-        Xd[y,:]=np.power(x,y)
+    print("Xd in shape")
+    #print(x)
+    print(p)
+    Xd = np.zeros((x.shape[0],p+1))
+    print("Xd shape")
+    print(Xd.shape)
+    for y in range(0,p+1):
+        for j in range(0,x.shape[0]):
+           
+            Xd[j][y]=x[j]**y
+    print("Xd out")
+    print(Xd)
     return Xd
 
 # Main script
@@ -304,17 +323,17 @@ k = 101
 lambdas = np.linspace(0, 1, num=k)
 i = 0
 rmses4 = np.zeros((k,1))
-opts = {'maxiter' : 100}    # Preferred value.                                                
+opts = {'maxiter' : 500}    # Preferred value.                                                
 w_init = np.ones((X_i.shape[1],1))
 for lambd in lambdas:
     args = (X_i, y, lambd)
-    w_l = minimize(regressionObjVal, w_init, jac=True, args=args,method='CG', options=opts)
+    w_l = minimize(regressionObjVal, w_init, jac=True, args=args,method='BFGS', options=opts)
     w_l = np.transpose(np.array(w_l.x))
     w_l = np.reshape(w_l,[len(w_l),1])
     rmses4[i] = testOLERegression(w_l,Xtest_i,ytest)
     i = i + 1
 plt.plot(lambdas,rmses4)
-
+plt.show()
 
 # Problem 5
 pmax = 7
@@ -329,3 +348,4 @@ for p in range(pmax):
     rmses5[p,1] = testOLERegression(w_d2,Xdtest,ytest)
 plt.plot(range(pmax),rmses5)
 plt.legend(('No Regularization','Regularization'))
+plt.show()
